@@ -44,5 +44,11 @@ jobs:
     - name: Run tests
       env:
         ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/test' && 'staging' || 'development' }}
+        PYTHONPATH: ${{ github.workspace }}
       run: |
         pytest tests/
+    - name: List directory contents
+      if: failure()
+      run: |
+        ls -R
+        pwd

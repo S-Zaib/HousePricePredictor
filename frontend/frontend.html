@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Styled House Features Form</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Link to custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container mt-5">
+        <div class="form-container border p-4 rounded">
+            <h1 class="text-center mb-4">Enter House Features</h1>
+            <form id="houseForm">
+
+                <!-- Two columns per row for input fields -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="price" class="form-label">Price:</label>
+                        <input type="number" id="price" name="price" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="area" class="form-label">Area (sq ft):</label>
+                        <input type="number" id="area" name="area" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="bedrooms" class="form-label">Number of Bedrooms:</label>
+                        <input type="number" id="bedrooms" name="bedrooms" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="bathrooms" class="form-label">Number of Bathrooms:</label>
+                        <input type="number" id="bathrooms" name="bathrooms" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="stories" class="form-label">Number of Stories:</label>
+                        <input type="number" id="stories" name="stories" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="parking" class="form-label">Parking Spaces:</label>
+                        <input type="number" id="parking" name="parking" class="form-control" required>
+                    </div>
+                </div>
+
+                <!-- One checkbox per row -->
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" id="mainroad" name="mainroad" class="form-check-input">
+                            <label for="mainroad" class="form-check-label">Main Road</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" id="guestroom" name="guestroom" class="form-check-input">
+                            <label for="guestroom" class="form-check-label">Guest Room</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" id="basement" name="basement" class="form-check-input">
+                            <label for="basement" class="form-check-label">Basement</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" id="hotwaterheating" name="hotwaterheating" class="form-check-input">
+                            <label for="hotwaterheating" class="form-check-label">Hot Water Heating</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" id="airconditioning" name="airconditioning" class="form-check-input">
+                            <label for="airconditioning" class="form-check-label">Air Conditioning</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" id="prefarea" name="prefarea" class="form-check-input">
+                            <label for="prefarea" class="form-check-label">Preferred Area</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dropdown for furnishing status -->
+                <div class="mb-3">
+                    <label for="furnishingstatus" class="form-label">Furnishing Status:</label>
+                    <select id="furnishingstatus" name="furnishingstatus" class="form-select" required>
+                        <option value="furnished">Furnished</option>
+                        <option value="semi-furnished">Semi-Furnished</option>
+                        <option value="unfurnished">Unfurnished</option>
+                    </select>
+                </div>
+
+                <!-- Submit button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Predict</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

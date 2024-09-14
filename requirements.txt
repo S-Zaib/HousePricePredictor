@@ -1,7 +1,7 @@
-Flask
-scikit-learn
+FlasK
+joblib
 pandas
 numpy
-joblib
-pytest
-gunicorn
+scikit-learn
+scipy
+Werkzeug

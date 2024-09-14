@@ -36,4 +36,4 @@ jobs:
       env:
         ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/test' && 'staging' || 'development' }}
       run: |
-        pytest tests/
+        pytest

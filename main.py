@@ -32,7 +32,7 @@ def preprocess_housing_data(csv_path):
     x_train_scaled = scaler.fit_transform(x_train)
     x_test_scaled = scaler.transform(x_test)
 
-    return x_train_scaled, y_train, x_test_scaled, y_test
+    return x_train_scaled, y_train, x_test_scaled, y_test, scaler
 
 # Hyperparameter Tuning with GridSearchCV
 def train_with_grid_search(x_train, y_train):
@@ -68,14 +68,16 @@ def evaluate_model(model, x_test, y_test):
     print(f"Mean Squared Error: {mse}")
     return mse
 
-# Save the best model
-def save_model(model, filename):
-    joblib.dump(model, filename)
-    print(f"Model saved to {filename}")
+# Save the best model and the scaler
+def save_model_and_scaler(model, scaler, model_filename, scaler_filename):
+    joblib.dump(model, model_filename)
+    joblib.dump(scaler, scaler_filename)
+    print(f"Model saved to {model_filename}")
+    print(f"Scaler saved to {scaler_filename}")
 
 if __name__ == "__main__":
     csv_path = 'dataset/Housing.csv'
-    x_train, y_train, x_test, y_test = preprocess_housing_data(csv_path)
+    x_train, y_train, x_test, y_test, scaler = preprocess_housing_data(csv_path)
 
     # Train models with different hyperparameter optimization methods
     print("Grid Search:")
@@ -86,6 +88,6 @@ if __name__ == "__main__":
     random_search_model = train_with_random_search(x_train, y_train)
     random_search_mse = evaluate_model(random_search_model, x_test, y_test)
 
-    # Save the best model
+    # Save the best model and scaler
     best_model = grid_search_model if grid_search_mse < random_search_mse else random_search_model
-    save_model(best_model, 'best_model.pkl')
+    save_model_and_scaler(best_model, scaler, 'best_model.pkl', 'scaler.pkl')

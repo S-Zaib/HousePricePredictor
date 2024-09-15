@@ -8,19 +8,19 @@ from main import preprocess_housing_data, train_with_grid_search, evaluate_model
 @pytest.fixture
 def sample_data():
     return pd.DataFrame({
-        'price': [100000, 200000],
-        'area': [1000, 1500],
-        'bedrooms': [2, 3],
-        'bathrooms': [1, 2],
-        'stories': [1, 2],
-        'mainroad': ['yes', 'no'],
-        'guestroom': ['no', 'yes'],
-        'basement': ['no', 'yes'],
-        'hotwaterheating': ['no', 'yes'],
-        'airconditioning': ['yes', 'no'],
-        'parking': [1, 2],
-        'prefarea': ['no', 'yes'],
-        'furnishingstatus': ['furnished', 'semi-furnished']
+        'price': [100000, 200000, 150000, 250000, 180000],  # Increased to 5 samples
+        'area': [1000, 1500, 1200, 1800, 1300],
+        'bedrooms': [2, 3, 2, 4, 3],
+        'bathrooms': [1, 2, 2, 3, 2],
+        'stories': [1, 2, 1, 2, 1],
+        'mainroad': [1, 0, 1, 1, 0],  # Changed to 1/0 instead of 'yes'/'no'
+        'guestroom': [0, 1, 0, 1, 1],
+        'basement': [0, 1, 0, 1, 0],
+        'hotwaterheating': [0, 1, 0, 0, 1],
+        'airconditioning': [1, 0, 1, 1, 1],
+        'parking': [1, 2, 1, 2, 1],
+        'prefarea': [0, 1, 0, 1, 1],
+        'furnishingstatus': [0, 1, 2, 0, 1]  # 0: unfurnished, 1: semi-furnished, 2: furnished
     })
 
 def test_preprocess_housing_data(sample_data, tmp_path):

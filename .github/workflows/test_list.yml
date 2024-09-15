@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Test and Lint
 
 on:
   push:
@@ -40,10 +40,19 @@ jobs:
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Set environment
+      run: |
+        if [ ${{ github.ref }} == 'refs/heads/main' ]; then
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+        elif [ ${{ github.ref }} == 'refs/heads/test' ]; then
+          echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+        else
+          echo "ENVIRONMENT=development" >> $GITHUB_ENV
+        fi
     
     - name: Run tests
       env:
-        ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/test' && 'staging' || 'development' }}
         PYTHONPATH: ${{ github.workspace }}
       run: |
         pytest tests/

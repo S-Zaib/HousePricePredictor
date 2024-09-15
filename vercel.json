@@ -11,5 +11,10 @@
         "src": "/(.*)",
         "dest": "app.py"
       }
-    ]
+    ],
+    "functions": {
+      "app.py": {
+        "includeFiles": "app.py,best_model.pkl,scaler.pkl,requirements.txt,templates/**"
+      }
+    }
   }

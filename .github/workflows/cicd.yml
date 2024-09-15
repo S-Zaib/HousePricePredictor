@@ -33,7 +33,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r allrequirements.txt
         pip install pytest flake8
     # Reference: https://michaelcurrin.github.io/dev-cheatsheets/cheatsheets/python/linting/flake8.html 
     - name: Lint with flake8

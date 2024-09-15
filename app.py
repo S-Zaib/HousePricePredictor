@@ -1,17 +1,18 @@
 import os
 from flask import Flask, request, jsonify, render_template
-from joblib import load as joblib_load
+import numpy as np
 from pandas import DataFrame 
 from werkzeug.exceptions import BadRequest
+import json
+from main import SimpleLinearRegression
 
 app = Flask(__name__)
 
-
-
 # Load the model and scaler
 try:
-    model = joblib_load('best_model.pkl')
-    scaler = joblib_load('scaler.pkl')
+    model = SimpleLinearRegression.load('best_model.json')
+    scaler_params = np.load('scaler.npy', allow_pickle=True)
+    scaler_mean, scaler_scale = scaler_params
 except FileNotFoundError as e:
     app.logger.error(f"Error loading model or scaler: {e}")
     exit(1)
@@ -57,14 +58,15 @@ def predict():
                 except ValueError:
                     raise ValueError(f"Invalid value for {key}: {value}. Expected a number.")
 
-        # Convert to DataFrame
+        # Convert to DataFrame and then to numpy array
         df = DataFrame([input_data])
+        input_array = df.values
 
         # Apply standard scaling
-        df_scaled = scaler.transform(df)
+        input_scaled = (input_array - scaler_mean) / scaler_scale
 
         # Make prediction
-        prediction = model.predict(df_scaled)[0]
+        prediction = model.predict(input_scaled)[0]
 
         # Return the result
         return jsonify({'prediction': float(prediction)})

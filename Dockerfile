@@ -17,7 +17,7 @@ COPY . .
 EXPOSE 5000
 
 # Set environment variable to ensure Flask runs in production
-ENV FLASK_ENV=production
+ENV FLASK_ENV=development
 
 # Command to run your Flask app
 CMD ["python", "app.py"]

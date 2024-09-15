@@ -3,4 +3,4 @@ joblib
 pandas
 numpy
 Werkzeug
-sklearn
+scikit-learn

@@ -16,9 +16,8 @@ COPY . .
 # Expose the port that Flask will be running on (5000)
 EXPOSE 5000
 
-# Set environment variable to ensure Flask runs in production
-ENV FLASK_ENV=development
+# Set environment variable for Flask default to production
+ENV FLASK_ENV=production
 
-# Command to run your Flask app
-CMD ["python", "app.py"]
-
+# Use Gunicorn for production and Flask's built-in server for development
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]

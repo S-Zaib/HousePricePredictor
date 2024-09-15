@@ -1,8 +1,9 @@
-version: '3'
+
 services:
   web:
     build: .
     ports:
       - "5000:5000"
-    env_file:
-      - .env.prod
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=0

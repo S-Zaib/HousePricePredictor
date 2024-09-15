@@ -6,6 +6,8 @@ from werkzeug.exceptions import BadRequest
 
 app = Flask(__name__)
 
+
+
 # Load the model and scaler
 try:
     model = joblib.load('best_model.pkl')

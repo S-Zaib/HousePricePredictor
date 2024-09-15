@@ -2,17 +2,22 @@ name: Deploy to Vercel
 
 on:
   workflow_run:
-    workflows: ["Test and Lint"]
+    workflows: ["CI/CD Pipeline"]
     types:
       - completed
+    branches:
+      - main
+      - dev
+      - test
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Only run if the testing job was successful
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
@@ -32,3 +37,10 @@ jobs:
           elif [[ ${{ github.event.workflow_run.head_branch }} == 'test' ]]; then
             vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --alias=test-myapp.vercel.app
           fi
+
+      - name: Debug Information
+        if: failure()
+        run: |
+          echo "Workflow Run ID: ${{ github.event.workflow_run.id }}"
+          echo "Workflow Run Branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "Workflow Run Conclusion: ${{ github.event.workflow_run.conclusion }}"

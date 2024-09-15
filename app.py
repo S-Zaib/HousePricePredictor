@@ -11,7 +11,7 @@ try:
     model = joblib.load('best_model.pkl')
     scaler = joblib.load('scaler.pkl')
 except FileNotFoundError as e:
-    print(f"Error loading model or scaler: {e}")
+    app.logger.error(f"Error loading model or scaler: {e}")
     exit(1)
 
 # Define the expected columns based on your training data
@@ -88,4 +88,5 @@ def server_error(e):
     return jsonify({'error': "An internal server error occurred. Please try again later."}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Ensure Flask is listening on all interfaces (0.0.0.0) and port 5000
+    app.run(host='0.0.0.0', port=5000, debug=True)

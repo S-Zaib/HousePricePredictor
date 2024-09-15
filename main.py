@@ -1,9 +1,13 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
 from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import Ridge
+from sklearn.metrics import mean_squared_error
+from scipy.stats import uniform
 import joblib
 
+# Data Preprocessing
 def preprocess_housing_data(csv_path):
     df = pd.read_csv(csv_path)
     
@@ -18,11 +22,11 @@ def preprocess_housing_data(csv_path):
     np.random.seed(0)
     train, test = train_test_split(df, test_size=0.2)
 
-    y_train = train.pop('price').values
-    x_train = train.values
+    y_train = train.pop('price')
+    x_train = train
 
-    y_test = test.pop('price').values
-    x_test = test.values
+    y_test = test.pop('price')
+    x_test = test
 
     scaler = StandardScaler()
     x_train_scaled = scaler.fit_transform(x_train)
@@ -30,26 +34,41 @@ def preprocess_housing_data(csv_path):
 
     return x_train_scaled, y_train, x_test_scaled, y_test, scaler
 
-class SimpleLinearRegression:
-    def fit(self, X, y):
-        X = np.insert(X, 0, 1, axis=1)  # Add intercept term
-        self.weights = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)
-    
-    def predict(self, X):
-        X = np.insert(X, 0, 1, axis=1)  # Add intercept term
-        return X.dot(self.weights)
+# Hyperparameter Tuning with GridSearchCV
+def train_with_grid_search(x_train, y_train):
+    ridge = Ridge()
+    param_grid = {
+        'alpha': [0.01, 0.1, 1, 10, 100],
+        'fit_intercept': [True, False],
+    }
+    grid_search = GridSearchCV(ridge, param_grid, scoring='neg_mean_squared_error', cv=5)
+    grid_search.fit(x_train, y_train)
+    best_params = grid_search.best_params_
+    print("Grid Search Best Hyperparameters:", best_params)
+    return grid_search.best_estimator_
 
-def train_model(x_train, y_train):
-    model = SimpleLinearRegression()
-    model.fit(x_train, y_train)
-    return model
+# Hyperparameter Tuning with RandomizedSearchCV
+def train_with_random_search(x_train, y_train):
+    ridge = Ridge()
+    param_distributions = {
+        'alpha': uniform(0.01, 100),
+        'fit_intercept': [True, False],
+    }
+    random_search = RandomizedSearchCV(ridge, param_distributions, n_iter=10, scoring='neg_mean_squared_error', cv=5, random_state=0)
+    random_search.fit(x_train, y_train)
+    best_params = random_search.best_params_
+    print("Random Search Best Hyperparameters:", best_params)
+    return random_search.best_estimator_
 
+
+# Model Evaluation
 def evaluate_model(model, x_test, y_test):
     y_pred = model.predict(x_test)
-    mse = np.mean((y_test - y_pred)**2)
+    mse = mean_squared_error(y_test, y_pred)
     print(f"Mean Squared Error: {mse}")
     return mse
 
+# Save the best model and the scaler
 def save_model_and_scaler(model, scaler, model_filename, scaler_filename):
     joblib.dump(model, model_filename)
     joblib.dump(scaler, scaler_filename)
@@ -60,7 +79,15 @@ if __name__ == "__main__":
     csv_path = 'dataset/Housing.csv'
     x_train, y_train, x_test, y_test, scaler = preprocess_housing_data(csv_path)
 
-    model = train_model(x_train, y_train)
-    evaluate_model(model, x_test, y_test)
+    # Train models with different hyperparameter optimization methods
+    print("Grid Search:")
+    grid_search_model = train_with_grid_search(x_train, y_train)
+    grid_search_mse = evaluate_model(grid_search_model, x_test, y_test)
+    
+    print("\nRandom Search:")
+    random_search_model = train_with_random_search(x_train, y_train)
+    random_search_mse = evaluate_model(random_search_model, x_test, y_test)
 
-    save_model_and_scaler(model, scaler, 'best_model.pkl', 'scaler.pkl')
+    # Save the best model and scaler
+    best_model = grid_search_model if grid_search_mse < random_search_mse else random_search_model
+    save_model_and_scaler(best_model, scaler, 'best_model.pkl', 'scaler.pkl')

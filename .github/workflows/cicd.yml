@@ -63,6 +63,7 @@ jobs:
         pwd
 
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:

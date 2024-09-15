@@ -4,19 +4,7 @@ import numpy as np
 from pandas import DataFrame 
 from werkzeug.exceptions import BadRequest
 import json
-
-class SimpleLinearRegression:
-    def predict(self, X):
-        X = np.insert(X, 0, 1, axis=1)  # Add intercept term
-        return X.dot(self.weights)
-    
-    @classmethod
-    def load(cls, filename):
-        with open(filename, 'r') as f:
-            weights = np.array(json.load(f))
-        model = cls()
-        model.weights = weights
-        return model
+from main import SimpleLinearRegression
 
 app = Flask(__name__)
 

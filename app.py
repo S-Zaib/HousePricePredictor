@@ -1,8 +1,19 @@
 import os
 from flask import Flask, request, jsonify, render_template
 from joblib import load as joblib_load
+import numpy as np
 from pandas import DataFrame 
 from werkzeug.exceptions import BadRequest
+
+# Add the SimpleLinearRegression class definition
+class SimpleLinearRegression:
+    def fit(self, X, y):
+        X = np.insert(X, 0, 1, axis=1)  # Add intercept term
+        self.weights = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)
+    
+    def predict(self, X):
+        X = np.insert(X, 0, 1, axis=1)  # Add intercept term
+        return X.dot(self.weights)
 
 app = Flask(__name__)
 
@@ -55,14 +66,15 @@ def predict():
                 except ValueError:
                     raise ValueError(f"Invalid value for {key}: {value}. Expected a number.")
 
-        # Convert to DataFrame
+        # Convert to DataFrame and then to numpy array
         df = DataFrame([input_data])
+        input_array = df.values
 
         # Apply standard scaling
-        df_scaled = scaler.transform(df)
+        input_scaled = scaler.transform(input_array)
 
         # Make prediction
-        prediction = model.predict(df_scaled)[0]
+        prediction = model.predict(input_scaled)[0]
 
         # Return the result
         return jsonify({'prediction': float(prediction)})

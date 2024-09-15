@@ -5,12 +5,17 @@ from sklearn.preprocessing import StandardScaler
 import json
 
 class SimpleLinearRegression:
+    def __init__(self, alpha=0.01):
+        self.alpha = alpha
+    
     def fit(self, X, y):
-        X = np.insert(X, 0, 1, axis=1)  # Add intercept term
-        self.weights = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)
+        X = np.insert(X, 0, 1, axis=1)  
+        identity_matrix = np.eye(X.shape[1])
+        identity_matrix[0, 0] = 0 
+        self.weights = np.linalg.inv(X.T.dot(X) + self.alpha * identity_matrix).dot(X.T).dot(y)
     
     def predict(self, X):
-        X = np.insert(X, 0, 1, axis=1)  # Add intercept term
+        X = np.insert(X, 0, 1, axis=1)  
         return X.dot(self.weights)
     
     def save(self, filename):
@@ -24,6 +29,7 @@ class SimpleLinearRegression:
         model = cls()
         model.weights = weights
         return model
+
 
 def preprocess_housing_data(csv_path):
     df = pd.read_csv(csv_path)
@@ -50,6 +56,7 @@ def preprocess_housing_data(csv_path):
     x_test_scaled = scaler.transform(x_test)
 
     return x_train_scaled, y_train, x_test_scaled, y_test, scaler
+
 
 def train_model(x_train, y_train):
     model = SimpleLinearRegression()

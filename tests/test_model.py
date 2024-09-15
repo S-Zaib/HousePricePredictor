@@ -22,6 +22,21 @@ def sample_data():
         'furnishingstatus': ['unfurnished', 'semi-furnished', 'furnished', 'unfurnished', 'semi-furnished']
     })
 
+def preprocess_sample_data(sample_data):
+    # Ensure the sample data is diverse and has no redundant columns
+    binary_cols = ['mainroad', 'guestroom', 'basement', 'hotwaterheating', 'airconditioning', 'prefarea']
+    sample_data[binary_cols] = sample_data[binary_cols].replace({'yes': 1, 'no': 0})
+    
+    # One-hot encode 'furnishingstatus'
+    sample_data = pd.get_dummies(sample_data, columns=['furnishingstatus'], drop_first=True)
+    
+    # Convert all columns to float
+    for column in sample_data.columns:
+        sample_data[column] = sample_data[column].astype(float)
+    
+    return sample_data
+
+
 def test_preprocess_housing_data(sample_data, tmp_path):
     # Save sample data to tmp file
     csv_path = tmp_path / "test_housing.csv"
@@ -39,8 +54,9 @@ def test_preprocess_housing_data(sample_data, tmp_path):
 
 def test_train_model(sample_data):
     # Prepare data
-    X = sample_data.drop('price', axis=1)
-    y = sample_data['price']
+    processed_data = preprocess_sample_data(sample_data)
+    X = processed_data.drop('price', axis=1)
+    y = processed_data['price']
     
     # Train model
     model = train_model(X.values, y.values)
@@ -52,8 +68,9 @@ def test_train_model(sample_data):
 
 def test_evaluate_model(sample_data):
     # Prepare data
-    X = sample_data.drop('price', axis=1)
-    y = sample_data['price']
+    processed_data = preprocess_sample_data(sample_data)
+    X = processed_data.drop('price', axis=1)
+    y = processed_data['price']
     
     # Train model
     model = SimpleLinearRegression()

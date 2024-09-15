@@ -1,7 +1,6 @@
-FlasK
+Flask
 joblib
 pandas
 numpy
-scikit-learn
-scipy
 Werkzeug
+scikit-learn

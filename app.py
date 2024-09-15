@@ -1,17 +1,19 @@
+import os
 from flask import Flask, request, jsonify, render_template
-import joblib
-import pandas as pd
-import numpy as np
+from joblib import load as joblib_load
+from pandas import DataFrame 
 from werkzeug.exceptions import BadRequest
 
 app = Flask(__name__)
 
+
+
 # Load the model and scaler
 try:
-    model = joblib.load('best_model.pkl')
-    scaler = joblib.load('scaler.pkl')
+    model = joblib_load('best_model.pkl')
+    scaler = joblib_load('scaler.pkl')
 except FileNotFoundError as e:
-    print(f"Error loading model or scaler: {e}")
+    app.logger.error(f"Error loading model or scaler: {e}")
     exit(1)
 
 # Define the expected columns based on your training data
@@ -56,7 +58,7 @@ def predict():
                     raise ValueError(f"Invalid value for {key}: {value}. Expected a number.")
 
         # Convert to DataFrame
-        df = pd.DataFrame([input_data])
+        df = DataFrame([input_data])
 
         # Apply standard scaling
         df_scaled = scaler.transform(df)
@@ -88,4 +90,5 @@ def server_error(e):
     return jsonify({'error': "An internal server error occurred. Please try again later."}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
